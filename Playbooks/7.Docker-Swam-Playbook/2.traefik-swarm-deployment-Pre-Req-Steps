@@ -1,0 +1,32 @@
+Using traefik2.yml:
+1. Run Terraform Code and Run 1.docker-swarm.yml
+2. docker network create --driver=overlay traefik-public
+3. Set following Env Vars on Manager Node.
+export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
+docker node update --label-add traefik-public.traefik-public-certificates=true $NODE_ID
+export EMAIL=mavrick202@gmail.com
+export DOMAIN=traefik.awsb64.xyz
+export TRAEFIK_REPLICAS=1
+export USERNAME=adminsree
+export PASSWORD=India123456
+export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
+
+4. docker stack deploy -c traefik2.yml traefik
+
+After Deploying Traefik:[BELOW NOT NEEDED AS ITS DEPLOYED BY TERRAFORM]
+0. Create a new DNS Record as traefik.awsb64.xyz and give IP as master Server where Traefik is running.
+1. Create two target groups, one for TCP/80 and other for TCP/443.
+2. Create a AWS Network Load Balancer and create listenders for both 80 and 443 and attach to Target Groups. 
+   If possible enable logging on the NLB and send logs to S3 Bucket.
+   Bucket Policy is needed:
+   https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-access-logs.html#enable-disable-access-logging
+   
+3. Update DNS with the domain name for vote and result.
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+- name: Run Apt Update
+  shell: apt update && apt install -y net-tools jq unzip tree 
+  tags:
+  - update
+
+- name: Install Nginx Server
+  apt: >
+    name=nginx
+    state=present
+  tags:
+  - install
+
+- name: Copy the index.j2 Template to index destination folder.
+  template: >
+     src=index.j2
+     dest=/var/www/html/index.nginx-debian.html
+     owner=root
+     group=root
+     mode=0644
+  notify: Restart Nginx
+  tags:
+  - j2
+
+- name: Copy the style files to destination folder.
+  copy: >
+     src=style.css
+     dest=/var/www/html/style.css
+     owner=root
+     group=root
+     mode=0644
+
+  notify: Restart Nginx
+  tags:
+  - style
+
+- name: Copy the javascript files to destination folder.
+  copy: >
+     src=scorekeeper.js
+     dest=/var/www/html/scorekeeper.js
+     owner=root
+     group=root
+     mode=0644
+  notify: Restart Nginx
+  tags:
+  - js
+
+- name: Check Nginx Port Status
+  shell: netstat -nltp | grep -i 80
+  
+- name: Check that you can connect (GET) to a page and it returns a status 200
+  ansible.builtin.uri:
+    url: http://{{ ip_address }}
+    method: GET

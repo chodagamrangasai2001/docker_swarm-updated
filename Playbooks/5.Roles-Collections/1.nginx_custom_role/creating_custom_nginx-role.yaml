@@ -1,0 +1,9 @@
+#ansible-galaxy init --init-path /etc/ansible/roles/ nginxinstall
+---
+  - name: Play for Install Nginx on WebServers Using Ansible Role.
+    hosts: pvt
+    gather_facts: yes
+    become: yes
+    become_user: root
+    roles:
+    - nginxinstall

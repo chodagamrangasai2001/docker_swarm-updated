@@ -1,0 +1,30 @@
+---
+  - name: Play for Install Nginx on WebServers Using Jinja2 Templates
+    hosts: pvt
+    gather_facts: yes
+    become: yes
+    become_user: root
+    vars:
+      fastapi_port: 8000
+    tasks:
+    - name: Run Apt Update
+      shell: apt update && apt install -y python3-pip
+
+    - name: Clone the FastAPI Repository
+      git:
+        repo: 'https://github.com/SreeVeerDevOps/python-fastapi-docker-public.git'
+        dest: /tmp/fastapi
+        force: yes
+
+    - name: Install FastAPI Dependencies
+      shell: >
+        pip3 install -r /tmp/fastapi/requirements.txt
+
+    - name: Stop Existing FastAPI Application
+      shell: >
+        ps -ef | grep uvicorn | grep -v grep | awk '{print $2}' | xargs kill -9
+      ignore_errors: yes
+      
+    - name: Run FastAPI Application
+      shell: >
+        cd /tmp/fastapi/ && uvicorn main:app --host 0.0.0.0 --port {{ fastapi_port }} --reload &

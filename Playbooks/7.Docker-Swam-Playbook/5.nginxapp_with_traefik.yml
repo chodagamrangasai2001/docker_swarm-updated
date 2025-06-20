@@ -1,0 +1,57 @@
+#docker stack deploy -c nginxapp_with_traefik.yml nginx
+
+version: "3"
+services:
+  nginxapp:
+    image: sreeharshav/testcontainer:v1
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 2
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.middlewares.nginx-https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.nginx-https-redirect.redirectscheme.permanent=true
+        - traefik.http.routers.nginx-public-http.rule=Host(`nginx.awsb62.xyz`)
+        - traefik.http.routers.nginx-public-http.entrypoints=http
+        - traefik.http.routers.nginx-public-http.middlewares=https-redirect
+        - traefik.http.routers.nginx-public-https.rule=Host(`nginx.awsb62.xyz`)
+        - traefik.http.routers.nginx-public-https.entrypoints=https
+        - traefik.http.routers.nginx-public-https.tls=true
+        - traefik.http.routers.nginx-public-https.tls.certresolver=le
+        - traefik.http.services.nginx-public.loadbalancer.server.port=80
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+  fastapi:
+    image: sreeharshav/fastapi:latest
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1 #Multiple Replicas is causing delay in result.
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.middlewares.fastapi-https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.fastapi-https-redirect.redirectscheme.permanent=true
+        - traefik.http.routers.fastapi-public-http.rule=Host(`fastapi.awsb62.xyz`)
+        - traefik.http.routers.fastapi-public-http.entrypoints=http
+        - traefik.http.routers.fastapi-public-http.middlewares=https-redirect
+        - traefik.http.routers.fastapi-public-https.rule=Host(`fastapi.awsb62.xyz`)
+        - traefik.http.routers.fastapi-public-https.entrypoints=https
+        - traefik.http.routers.fastapi-public-https.tls=true
+        - traefik.http.routers.fastapi-public-https.tls.certresolver=le
+        - traefik.http.services.fastapi-public.loadbalancer.server.port=80
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+networks:
+  traefik-public:
+    external: true

@@ -1,0 +1,39 @@
+#Create a vault secret file with vault_heartbeat.j2 file.
+---
+  - name: Install Elastic Heartbeat Agent On All Docker Hosts
+    hosts: pvt
+    become: yes
+    become_user: root
+    vars:
+      fqdn_name: "{{ ansible_facts['fqdn'] }}"
+    tasks:
+      - name: Install Elastic Heartbeat Agent
+        shell: |
+          curl -L -O https://artifacts.elastic.co/downloads/beats/heartbeat/heartbeat-8.11.0-amd64.deb
+          sudo dpkg -i heartbeat-8.11.0-amd64.deb
+        when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '20.04'    
+
+      - name: Copy the heartbeat.j2 Template to elastic destination folder.
+        template: >
+           src=/root/ansiblecode/Playbooks/4.Ansible_Vault/heartbeat.j2
+           dest=/etc/heartbeat/heartbeat.yml
+           owner=root
+           group=root
+           mode=0644
+
+      - name: Start Uptime Heartbeat
+        shell: sudo heartbeat setup && sudo service heartbeat-elastic restart
+        ignore_errors: yes
+        #https://<elastic-cloud-url>:9243/app/uptime
+
+      - name: Install elastic-agent
+        shell: |
+           curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.12.2-amd64.deb
+           sudo dpkg -i elastic-agent-8.12.2-amd64.deb
+           sudo elastic-agent enroll --url=https://c6b656904ba64eb69a47ef9bcb78fa6d.fleet.us-east-1.aws.found.io:443 --enrollment-token=djZiWlA0NEJWWmg4blRfZlNJR2c6TGc0bDRMNEFSLUtzRFZqT3RmMUFhdw== 
+           sudo systemctl enable elastic-agent 
+           sudo systemctl start elastic-agent
+        when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '20.04'    
+
+    tags:
+     - heartbeat_install

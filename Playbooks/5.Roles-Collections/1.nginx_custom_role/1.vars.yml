@@ -1,0 +1,14 @@
+---
+# vars file for nginxinstall
+#Static Variables
+custom_heading: "Welcome To DevSecOps B43 Batch Training By Sreeharsha Veerapalli"
+custom_para: "Testing Roles and Collections For Batch B43"
+friends: ['Sree','Harsha','Raju', 'Kumar', "Eswar", "David"]
+#Dynamic variables from Ansible Facts
+deployed_on: "{{ ansible_date_time.iso8601 }}"
+todays_date: "{{ ansible_facts['date_time']['date'] }}"
+host_name: "{{ ansible_facts['hostname'] }}"
+fqdn_name: "{{ ansible_facts['fqdn'] }}"
+os_family: "{{ ansible_facts['distribution'] }}"
+os_dest: "{{ ansible_facts['distribution_version'] }}"
+ip_address: "{{ ansible_facts['eth0']['ipv4']['address'] }}"

@@ -1,0 +1,59 @@
+---
+- name: Play for Testing Block, Rescue, Always with AWS CLI
+  hosts: pvt
+  gather_facts: yes
+  become: yes
+  become_user: root
+  vars:
+    packer_version: 1.8.5
+  tasks:
+  - name: Testing The Ansible Blocks
+    #https://www.golinuxcloud.com/ansible-block-rescue-always/
+    block:
+    - name: Perform apt update - BLOCK
+      shell: apt update
+    - name: Check if netstat works - BLOCK
+      shell: netstat -nltp
+    - name: Check if ifconfig works - BLOCK
+      shell: ifconfig
+    - name: Check if AWS Exists - BLOCK
+      shell: aws --version
+    - name: Check if Packer Exists - BLOCK
+      shell: packer version
+    when: ansible_distribution == 'Ubuntu' and ansible_distribution_version == '22.04'    
+ 
+    # Rescue tasks execute if any of the block task fails in above section.
+    rescue:
+    - name: Install Net-Tools - RESCUE
+      shell: apt install -y net-tools
+
+    - name: Install UNZIP - RESCUE
+      apt: >
+        name=unzip
+        state=latest
+    - name: Install JQ - RESCUE
+      apt: >
+        name=jq
+        state=latest
+    - name: Install AWS - RESCUE
+      shell: |
+         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+         unzip awscliv2.zip
+         sudo ./aws/install
+    - name: Install Terraform CLI
+      shell: |
+        rm -rf packer.zip && rm -rf LICENSE.txt && rm -rf /usr/local/bin/packer
+        curl "https://releases.hashicorp.com/packer/{{packer_version}}/packer_{{packer_version}}_linux_amd64.zip" -o "packer.zip"
+        unzip packer.zip
+        mv packer /usr/local/bin
+        packer version
+    
+    always:
+    - name: Run This Always - ALWAYS
+      shell: ls -al
+      register: file_list
+    - name: Print Files - ALWAYS
+      debug:
+        msg: "{{file_list.stdout}}"
+    - name: Check AWS CLI Version - ALWAYS
+      shell: aws --version

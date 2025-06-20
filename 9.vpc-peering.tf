@@ -2,11 +2,11 @@ resource "time_sleep" "wait_90_seconds" {
   create_duration = "90s"
 }
 
-data "aws_vpc" "ansible_vpc" {
+data "aws_vpc" "vpc-a-vpc" {
   id = var.vpc_peering_id
 }
 
-data "aws_route_table" "ansible_vpc_rt" {
+data "aws_route_table" "vpc-a-subnet-public1-us-east-1a" {
   subnet_id = var.vpc_peering_subnet_id
   #If subnet_id giving errors use route table id as below
   #route_table_id = data.aws_route_table.ansible_vpc_rt.id

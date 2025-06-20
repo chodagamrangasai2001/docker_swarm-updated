@@ -61,12 +61,12 @@ resource "aws_lb_target_group_attachment" "tls443" {
 
 
 data "aws_route53_zone" "zone" {
-    name = "awsb64.xyz" #Change this to your domain name as yours.
+    name = "chodagams.shop" #Change this to your domain name as yours.
 }
 
 resource "aws_route53_record" "traefik" {
     zone_id = data.aws_route53_zone.zone.zone_id
-    name    = "traefik.awsb64.xyz"
+    name    = "traefik.chodagams.shop"
     type    = "CNAME"
     ttl     = 300
     records = [aws_lb.network.dns_name]
@@ -74,7 +74,7 @@ resource "aws_route53_record" "traefik" {
 
 resource "aws_route53_record" "www" {
     zone_id = data.aws_route53_zone.zone.zone_id
-    name    = "www.awsb64.xyz"
+    name    = "www.chodagams.shop"
     type    = "CNAME"
     ttl     = 300
     records = [aws_lb.network.dns_name]
@@ -82,7 +82,7 @@ resource "aws_route53_record" "www" {
 
 resource "aws_route53_record" "vote" {
     zone_id = data.aws_route53_zone.zone.zone_id
-    name    = "vote.awsb64.xyz"
+    name    = "vote.chodagams.shop"
     type    = "CNAME"
     ttl     = 300
     records = [aws_lb.network.dns_name]
@@ -90,7 +90,7 @@ resource "aws_route53_record" "vote" {
 
 resource "aws_route53_record" "result" {
     zone_id = data.aws_route53_zone.zone.zone_id
-    name    = "result.awsb64.xyz"
+    name    = "result.chodagams.shop"
     type    = "CNAME"
     ttl     = 300
     records = [aws_lb.network.dns_name]
@@ -98,7 +98,7 @@ resource "aws_route53_record" "result" {
 
 resource "aws_route53_record" "fastapi" {
     zone_id = data.aws_route53_zone.zone.zone_id
-    name    = "fastapi.awsb64.xyz"
+    name    = "fastapi.chodagams.shop"
     type    = "CNAME"
     ttl     = 300
     records = [aws_lb.network.dns_name]
@@ -106,7 +106,7 @@ resource "aws_route53_record" "fastapi" {
 
 resource "aws_route53_record" "nginx" {
     zone_id = data.aws_route53_zone.zone.zone_id
-    name    = "nginx.awsb64.xyz"
+    name    = "nginx.chodagams.shop"
     type    = "CNAME"
     ttl     = 300
     records = [aws_lb.network.dns_name]

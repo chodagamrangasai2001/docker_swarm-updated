@@ -11,8 +11,8 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "sreeterraformbucket"
-    key    = "ansible-b43.tfstate"
+    bucket = "ansiblepurpose"
+    key    = "space_b43.tfstate"
     region = "us-east-1"
   }
 }

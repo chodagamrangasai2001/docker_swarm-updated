@@ -1,7 +1,7 @@
 aws_region           = "us-east-1"
 vpc_cidr             = "192.168.0.0/16"
 vpc_name             = "Ansible-B43"
-key_name             = "LaptopKey"
+key_name             = "devsecops-kp"
 public_subnet_cidrs  = ["192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]    #List
 private_subnet_cidrs = ["192.168.10.0/24", "192.168.20.0/24", "192.168.30.0/24"] #List
 azs                  = ["us-east-1a", "us-east-1b", "us-east-1c"]                #List

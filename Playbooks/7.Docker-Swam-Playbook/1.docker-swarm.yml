@@ -36,7 +36,7 @@
         state: started
         enabled: true
 
-    tasks:
+      tasks:
       - name: Install Docker Engine On All Hosts If Not Exists
         block:
         - name: Check Docker Version

@@ -5,7 +5,7 @@ Using traefik2.yml:
 export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
 docker node update --label-add traefik-public.traefik-public-certificates=true $NODE_ID
 export EMAIL=mavrick202@gmail.com
-export DOMAIN=traefik.awsb64.xyz
+export DOMAIN=traefik.chodagams.shop
 export TRAEFIK_REPLICAS=1
 export USERNAME=adminsree
 export PASSWORD=India123456
@@ -14,7 +14,7 @@ export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD)
 4. docker stack deploy -c traefik2.yml traefik
 
 After Deploying Traefik:[BELOW NOT NEEDED AS ITS DEPLOYED BY TERRAFORM]
-0. Create a new DNS Record as traefik.awsb64.xyz and give IP as master Server where Traefik is running.
+0. Create a new DNS Record as traefik.chodagams.shop and give IP as master Server where Traefik is running.
 1. Create two target groups, one for TCP/80 and other for TCP/443.
 2. Create a AWS Network Load Balancer and create listenders for both 80 and 443 and attach to Target Groups. 
    If possible enable logging on the NLB and send logs to S3 Bucket.

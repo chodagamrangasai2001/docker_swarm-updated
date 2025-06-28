@@ -23,3 +23,4 @@
       sudo systemctl enable elastic-agent 
       sudo systemctl start elastic-agent 
       sudo elastic-agent enroll --url=https://9d61404d76cf49769b3d3e1f49c2b3c5.fleet.us-east-2.aws.elastic-cloud.com:443 --enrollment-token={{elastic_token}}
+####sdfgh

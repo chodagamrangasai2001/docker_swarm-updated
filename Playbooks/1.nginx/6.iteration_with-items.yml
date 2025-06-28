@@ -1,0 +1,56 @@
+---
+- name: Play For Creating Multiple Users
+  hosts: pvt
+  gather_facts: yes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create Users
+    user:
+      name: "{{ item.name }}"
+      uid: "{{ item.uid }}"
+      groups: "{{ item.groups }}"
+    with_items:
+    - { name: testuser100, uid: 2001, groups: "ubuntu" }
+    - { name: testuser200, uid: 2002, groups: "admin" }
+    - { name: testuser300, uid: 2003, groups: "users" }
+
+- name: Play For Install Nginx & Copying Multiple Files
+  hosts: pvt
+  gather_facts: yes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Check Nginx Exists
+    shell: nginx -v
+    register: nginx_output
+    ignore_errors: yes
+
+  - name: Install Nginx Webserver Application
+    apt:
+      name: nginx
+      state: latest
+      update_cache: yes
+    timeout: 30
+
+  - name: Start Nginx Service
+    service:
+      name: nginx
+      state: started
+    when: (nginx_output.rc != 0 and ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] == "22.04")
+  
+  - name: Copy All Webserver Files to {{ inventory_hostname }}
+    copy:   
+      src: "{{ item }}"
+      dest: /var/www/html/
+      owner: root
+      group: root
+      mode: '0644'
+    with_items:
+    - /tmp/nginxfiles/index.html
+    - /tmp/nginxfiles/scorekeeper.js
+    - /tmp/nginxfiles/style.css
+    - /tmp/nginxfiles/aboutus.html
+    - /tmp/nginxfiles/contact.html
+    - /tmp/nginxfiles/orders.html
+    when: (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_version'] == "22.04")

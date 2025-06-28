@@ -1,0 +1,35 @@
+---
+  - name: Play for Installing K3S Kubernetes Cluster
+    hosts: testserver01
+    gather_facts: yes
+    become: yes
+    become_user: root
+    roles:
+    - xanmanning.k3s
+    vars:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+    tasks:
+    - name: Deploy Sample Nginx Application
+      shell: kubectl create deployment app1 --image=sreeharshav/testcontainer:v1
+      environment: "{{KUBECONFIG}}"
+    tags: k3s
+
+  - name: Play for K3S Kubernetes Cluster
+    hosts: testserver01
+    gather_facts: yes
+    become: yes
+    become_user: root
+    vars:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+    tasks:
+    - name: Deploy Sample Nginx Application
+      shell: |
+        kubectl create deployment app2 --image=sreeharshav/rollingupdate:v5 --replicas=3
+        kubectl expose deployment app2 --port=80 --type=NodePort
+      environment: "{{KUBECONFIG}}"
+    tags: nginx
+    ignore_errors: yes
+
+#ansible-galaxy role install xanmanning.k3s
+#ansible-playbook -i invfile Playbooks/6.Roles-Collections/k3s.yml -vvv -e "k3s_become=yes"
+#export KUBECONFIG=/etc/rancher/k3s/k3s.yaml  - on server1

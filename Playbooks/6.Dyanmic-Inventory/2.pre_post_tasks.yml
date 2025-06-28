@@ -1,0 +1,13 @@
+---
+- hosts: k8s_worker_nodes
+  gather_facts: yes
+  become: yes
+  serial: 1
+  pre_tasks:
+    - name: Cordon Worker Node {{ inventory_hostname }} in Kubernetes Cluster
+      shell: kubectl cordon {{ inventory_hostname }}
+  roles:
+    - k8s_upgrade_1_30
+  post_tasks:
+    - name: Uncordon Worker Node {{ inventory_hostname }} in Kubernetes Cluster
+      shell: kubectl uncordon {{ inventory_hostname }}

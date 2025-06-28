@@ -1,0 +1,46 @@
+---
+- name: Install Nginx On WebServers 1 2 3
+  hosts: pvt
+  gather_facts: yes
+  become: yes
+  become_user: root
+  vars:
+   nginx_port: 80
+   version: 1.0.0
+   t_version: 1.9.8
+  tasks:
+  - name: Check Nginx Installation Status
+    shell: nginx -v
+    register: nginx_status_output
+    ignore_errors: yes
+    tags: [check] 
+
+  - name: Perform Apt Update
+    shell: apt update
+    when: nginx_status_output.rc != 0
+  
+  - name: Install Nginx Webserver
+    shell: apt install -y nginx
+    when: nginx_status_output.rc != 0
+    tags:
+    - nginx_install
+    - install_nginx
+
+  - name: Start Nginx Webservice
+    shell: service nginx start
+    when: nginx_status_output.rc != 0
+    tags: [service_install, install_service]
+  tags:
+  - nginx
+
+- name: Install Support Tools
+  hosts: pub
+  become: yes
+  become_user: root
+  tasks:
+  - name: Install Support Tools
+    shell: apt install -y net-tools jq tree unzip
+    tags:
+    - tools_install
+  tags:
+  - tools

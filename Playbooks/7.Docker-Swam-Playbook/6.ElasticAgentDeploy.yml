@@ -23,3 +23,11 @@
         sudo systemctl enable elastic-agent 
         sudo systemctl start elastic-agent 
         sudo elastic-agent enroll --url=https://9d61404d76cf49769b3d3e1f49c2b3c5.fleet.us-east-2.aws.elastic-cloud.com:443 --enrollment-token=SjlaS3RwY0I4cUY0dkVCSFBzZFU6ekdBd1habzhrOVpfUUJzOG4tWGd2QQ==
+      tags:  
+        - main
+
+    - name: Installing metrics and logs
+      shell: |
+        curl https://29d51eb0ee33452b8d313db2b1388def.us-east-2.aws.elastic-cloud.com/3b8379b249b9/plugins/observabilityOnboarding/assets/auto_detect.sh -so auto_detect.sh && sudo bash auto_detect.sh --id=a1ae710f-2720-4666-8c64-10c33962434e --kibana-url=https://29d51eb0ee33452b8d313db2b1388def.us-east-2.aws.elastic-cloud.com --install-key=cVQ3dnRwY0JvSDNoRXQ1cGdzMkg6SG1lZ1Vpb1M0Q20wSWp0ZVdjSDdSQQ== --ingest-key=LWRidnRwY0I4cUY0dkVCSGdzaUs6Sm9JRk1fMGZNRklTeDBtc0JNQ29lUQ== --ea-version=9.0.3
+      tags: 
+        - logandm
